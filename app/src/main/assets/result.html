@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Prediction Result</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background: #121212;
+            color: #f1f1f1;
+            font-family: 'Segoe UI', sans-serif;
+            display: flex;
+			flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            animation: fadeIn 1.5s ease-in;
+            margin: 0;
+            padding: 20px;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        .card-custom {
+            background: #1e1e1e;
+            border-radius: 10px;
+            padding: 30px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            text-align: center;
+        }
+        .result-image {
+            max-width: 100%;
+            max-height: 300px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: block;
+			margin-left: auto;
+			margin-right: auto;
+        }
+        .label {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #4CAF50;
+        }
+        .confidence-container {
+            margin: 20px 0;
+        }
+        .confidence-text {
+            margin-bottom: 8px;
+        }
+        .progress {
+            height: 20px;
+            background: #333;
+            border-radius: 10px;
+        }
+        .progress-bar {
+            background-color: #4CAF50;
+            border-radius: 10px;
+        }
+        .btn-custom {
+            background-color: #4CAF50;
+            border: none;
+            padding: 10px 20px;
+            font-weight: bold;
+        }
+        .btn-custom:hover {
+            background-color: #3e8e41;
+        }
+        .details {
+            margin: 20px 0;
+            text-align: left;
+            padding: 15px;
+            background: #252525;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+  <img src="logo.png" alt="App Logo" style="max-width:350px; display:block; margin:0 auto 20px;">
+    <div class="card-custom">
+        <img id="resultImage" alt="Uploaded Image" class="result-image">
+        <div class="label">Prediction: <span id="predictionLabel">Loading...</span></div>
+        <div class="confidence-container">
+            <div class="confidence-text">Confidence: <span id="confidenceValue">0</span>%</div>
+            <div class="progress">
+                <div id="confidenceBar" class="progress-bar" role="progressbar" style="width: 0%"></div>
+            </div>
+        </div>
+        <div class="details" id="predictionDetails"></div>
+        <button onclick="window.AndroidInterface.returnToHome()" class="btn btn-custom mt-3">Try Another Image</button>
+    </div>
+
+    <script>
+    function receivePrediction(label, confidence, imageData) {
+        try {
+            document.getElementById('predictionLabel').textContent = label;
+            document.getElementById('confidenceValue').textContent = confidence.toFixed(2) + '%';
+            document.getElementById('confidenceBar').style.width = confidence + '%';
+            
+            if (imageData) {
+                document.getElementById('resultImage').src = imageData;
+            }
+            
+            // Add more details based on prediction
+            const details = getPredictionDetails(label);
+            document.getElementById('predictionDetails').innerHTML = details;
+        } catch(e) {
+            console.error("Error in receivePrediction:", e);
+            if (window.AndroidInterface && window.AndroidInterface.returnToHome) {
+                window.AndroidInterface.returnToHome();
+            }
+        }
+    }
+
+    function getPredictionDetails(label) {
+        switch(label) {
+            case "12K":
+                return "<p>Sample classified as <strong>12K</strong> — highest salinity range.</p>";
+            case "4K":
+                return "<p>Sample classified as <strong>4K</strong> — medium salinity level.</p>";
+            case "8K":
+                return "<p>Sample classified as <strong>8K</strong> — moderately high salinity.</p>";
+            case "Control":
+                return "<p>Sample classified as <strong>Control</strong> — baseline reference sample.</p>";
+            default:
+                return `<p>Details about ${label} will be shown here.</p>`;
+        }
+    }
+</script>
+
+</body>
+</html>
