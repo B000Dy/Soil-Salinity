@@ -36,9 +36,13 @@ The app works fully **offline**, enabling fast, on-site agricultural assessment 
 
 ## 📂 Project Structure
  /app
+ 
 ├── src/ # Kotlin source code
+
 ├── assets/model.tflite # Trained TensorFlow Lite model
+
 ├── res/ # UI resources
+
 └── ...
 
 ---
